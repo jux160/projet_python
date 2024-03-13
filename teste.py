@@ -3,6 +3,10 @@ import openmeteo_requests
 import requests_cache
 import pandas as pd
 from retry_requests import retry
+from csv import *
+ 
+
+vile = input("choisisez le nom de votre ville")
 
 # Setup the Open-Meteo API client with cache and retry on error
 cache_session = requests_cache.CachedSession('.cache', expire_after = 3600)
