@@ -1,12 +1,15 @@
-import openmeteo_requests
-
-import requests_cache
+#import openmeteo_requests
+#import requests_cache
 import pandas as pd
-from retry_requests import retry
-from csv import *
- 
+#from retry_requests import retry
 
-vile = input("choisisez le nom de votre ville")
+
+ville = input("choisisez le nom de votre ville ")
+ville = ville.lower()
+df = pd.read_csv('cities.csv')
+results = df.loc[df['city_code'] == ville]
+print(results["longitude"])
+print(results["latitude"])
 
 # Setup the Open-Meteo API client with cache and retry on error
 cache_session = requests_cache.CachedSession('.cache', expire_after = 3600)
