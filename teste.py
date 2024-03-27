@@ -1,16 +1,22 @@
-#import openmeteo_requests
-#import requests_cache
+import openmeteo_requests
+import requests_cache
 import pandas as pd
-#from retry_requests import retry
-
+from retry_requests import retry
+import csv
 
 ville = input("choisisez le nom de votre ville ")
 ville = ville.lower()
-df = pd.read_csv('cities.csv')
-results = df.loc[df['city_code'] == ville]
-print(results["longitude"])
-print(results["latitude"])
 
+city = []
+
+with open("cities.csv", mode="r") as csvfile:
+    reader = csv.DictReader(csvfile)
+    for row in reader:
+        if row["city_code"] == ville:
+            city.append(row)
+print(city)
+print(city[0]["latitude"])
+print(city[0]["longitude"])
 # Setup the Open-Meteo API client with cache and retry on error
 cache_session = requests_cache.CachedSession('.cache', expire_after = 3600)
 retry_session = retry(cache_session, retries = 5, backoff_factor = 0.2)
@@ -20,8 +26,8 @@ openmeteo = openmeteo_requests.Client(session = retry_session)
 # The order of variables in hourly or daily is important to assign them correctly below
 url = "https://api.open-meteo.com/v1/meteofrance"
 params = {
-	"latitude": 49.00124021630439,
-	"longitude": 2.145694908071829,
+	"latitude": city[0]["latitude"],
+	"longitude": city[0]["longitude"],
 	"current": "temperature_2m"
 }
 responses = openmeteo.weather_api(url, params=params)
